@@ -4,72 +4,63 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import com.example.myapplication.R
 
-class MainActivity : ComponentActivity() {
-
+class ThirdActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val textFromSecond = intent.getStringExtra("text_key") ?: "UwU"
+
         setContent {
-            mainContent()
+            mainContent(textFromSecond)
         }
     }
 
-
     @Composable
-    private fun mainContent() {
-        val textState = remember { androidx.compose.runtime.mutableStateOf("") }
-
+    private fun mainContent(text: String) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            textField(textState)
+            textView(text)
             Spacer(modifier = Modifier.height(16.dp))
-            outlinedButtonFunction(textState.value)
+            goToMain()
         }
     }
 
     @Composable
-    private fun textField(textState: MutableState<String>) {
-        TextField(
-            value = textState.value,
-            onValueChange = { textState.value = it },
-            label = { Text("Daaamn, that's a text") }
-        )
+    private fun textView(text: String) {
+        Text(text = text)
     }
 
-
     @Composable
-    private fun outlinedButtonFunction(text: String) {
+    private fun goToMain() {
         val context = LocalContext.current
         OutlinedButton(
             onClick = {
-                val intent = Intent(context, SecondActivity::class.java)
-                if (
-                    text.isNotEmpty()
-                )
-                    intent.putExtra("text_key",text)
+                val intent = Intent(context, MainActivity::class.java)
                 context.startActivity(intent)
             }
         ) {
-            Text("Super Secret Button")
+            Text("Bye bye bro... i will miss you")
         }
     }
 }
