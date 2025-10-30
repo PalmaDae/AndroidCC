@@ -1,5 +1,7 @@
     package com.example.myapplication.ui.screens
 
+    import androidx.compose.ui.res.stringResource
+    import com.example.myapplication.R
     import androidx.compose.foundation.layout.Arrangement
     import androidx.compose.foundation.layout.Box
     import androidx.compose.foundation.layout.Column
@@ -40,6 +42,8 @@
         var emailError by remember { mutableStateOf<String?>(null) }
         var passwordError by remember { mutableStateOf<String?>(null) }
         var passwordVisible by remember { mutableStateOf(false) }
+        val errorInvalidEmail = stringResource(R.string.error_invalid_email)
+        val errorPasswordLength = stringResource(R.string.error_password_length)
 
 
         Box(
@@ -58,7 +62,7 @@
                         email = it
                         emailError = null
                     },
-                    label = {Text("Email")},
+                    label = {Text(text = stringResource(R.string.email))},
                     isError = emailError != null,
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
@@ -76,13 +80,13 @@
                         password = it
                         passwordError = null
                     },
-                    label = {Text("Password")},
+                    label = {Text(text = stringResource(R.string.password))},
                     isError = passwordError != null,
                     modifier = Modifier.fillMaxWidth(),
                     visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     trailingIcon = {
                         TextButton(onClick = {passwordVisible = !passwordVisible}) {
-                            Text(if (passwordVisible) "Скрыть" else "Показать")
+                            Text(if (passwordVisible) stringResource(R.string.hide) else stringResource(R.string.show))
                         }
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
@@ -99,11 +103,11 @@
                         var valid = true
 
                         if (!Validation.isEmailValid(email)) {
-                            emailError = "Неверный формат email"
+                            emailError = errorInvalidEmail
                             valid = false
                         }
                         if (!Validation.isPasswordValid(password)) {
-                            passwordError = "Минимум 8 символов"
+                            passwordError = errorPasswordLength
                             valid = false
                         }
 
@@ -114,7 +118,7 @@
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Войти")
+                    Text(stringResource(R.string.login_button))
                 }
             }
         }
