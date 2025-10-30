@@ -1,12 +1,12 @@
 package com.example.myapplication.navigation
 
+import AddNoteScreen
+import NoteScreen
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.myapplication.ui.screens.AddNoteScreen
 import com.example.myapplication.ui.screens.LoginScreen
-import com.example.myapplication.ui.screens.NoteScreen
 import com.example.myapplication.viewmodel.SharedViewModel
 
 object Routes {

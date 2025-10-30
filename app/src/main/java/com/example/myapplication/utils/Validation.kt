@@ -1,7 +1,6 @@
 package com.example.myapplication.utils
 
 import android.util.Patterns
-import org.intellij.lang.annotations.Pattern
 
 object Validation {
     fun isEmailValid(email: String): Boolean {
