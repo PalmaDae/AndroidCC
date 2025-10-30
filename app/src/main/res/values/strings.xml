@@ -1,3 +1,16 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">MyNotes</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="show">Показать</string>
+    <string name="hide">Скрыть</string>
+    <string name="login_button">Войти</string>
+    <string name="error_invalid_email">Неверный формат email</string>
+    <string name="error_password_length">Минимум 8 символов</string>
+    <string name="no_notes">Заметок нет</string>
+    <string name="add_note_button">Добавить заметку</string>
+    <string name="note_title">Заголовок</string>
+    <string name="note_content">Текст заметки</string>
+    <string name="error_empty_title">Заголовок не может быть пустым</string>
+    <string name="save_button">Сохранить</string>
 </resources>
