@@ -30,10 +30,10 @@ class NotificationsHandler(private val context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,
-                "App Notifications",
-                NotificationManager.IMPORTANCE_DEFAULT
+                context.getString(R.string.channel_name),
+                NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = "Channel for app notifications"
+                description = context.getString(R.string.channel_description)
             }
             notificationManager.createNotificationChannel(channel)
         }
@@ -67,7 +67,7 @@ class NotificationsHandler(private val context: Context) {
             .setSmallIcon(notification.icon ?: R.drawable.ic_launcher_foreground)
             .setContentTitle(notification.title)
             .setContentText(notification.content ?: "")
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
             .setAutoCancel(true)
             .apply {
                 if (pendingIntent != null) setContentIntent(pendingIntent)
@@ -75,9 +75,8 @@ class NotificationsHandler(private val context: Context) {
                     setStyle(NotificationCompat.BigTextStyle().bigText(notification.content))
                 }
 
-
                 if (replyActionEnabled) {
-                    val replyLabel = "Reply"
+                    val replyLabel = context.getString(R.string.reply)
                     val remoteInput = RemoteInput.Builder("reply_text")
                         .setLabel(replyLabel)
                         .build()
@@ -90,12 +89,12 @@ class NotificationsHandler(private val context: Context) {
                         context,
                         notification.id,
                         replyIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
                     )
 
                     val action = NotificationCompat.Action.Builder(
                         R.drawable.ic_launcher_foreground,
-                        "Reply",
+                        replyLabel,
                         replyPendingIntent
                     ).addRemoteInput(remoteInput)
                         .build()

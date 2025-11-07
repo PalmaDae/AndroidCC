@@ -11,10 +11,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import com.example.myapplication.R
 import com.example.myapplication.model.NotificationModel
 import com.example.myapplication.model.NotificationType
+import com.example.myapplication.model.NotificationsRepository
 import com.example.myapplication.utils.NotificationsHandler
 
 @Composable
@@ -33,6 +36,21 @@ fun NotSettingsJetpackScreen(
     var replyAction by remember { mutableStateOf(false) }
     var priority by remember { mutableStateOf(NotificationType.DEFAULT) }
 
+    // Все строки выносим заранее
+    val titleLabelText = stringResource(R.string.title_label)
+    val contentOptionalText = stringResource(R.string.content_optional)
+    val expandableText = stringResource(R.string.expandable)
+    val openMainText = stringResource(R.string.open_main_activity)
+    val replyActionText = stringResource(R.string.reply_action)
+    val priorityLabelText = stringResource(R.string.priority_label, priority.name)
+    val titleCannotBeEmptyText = stringResource(R.string.title_cannot_be_empty)
+    val notificationPermissionNotGrantedText = stringResource(R.string.notification_permission_not_granted)
+    val sendNotificationText = stringResource(R.string.send_notification)
+    val notificationSentWithIdText = stringResource(R.string.notification_sent_with_id, 0) // временно 0, заменим в onClick
+    val messagesText = stringResource(R.string.messages)
+    val editorText = stringResource(R.string.editor)
+    val settingsText = stringResource(R.string.settings)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -41,17 +59,18 @@ fun NotSettingsJetpackScreen(
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+
             OutlinedTextField(
                 value = title,
                 onValueChange = { title = it },
-                label = { Text("Title") },
+                label = { Text(titleLabelText) },
                 modifier = Modifier.fillMaxWidth()
             )
 
             OutlinedTextField(
                 value = content,
                 onValueChange = { content = it },
-                label = { Text("Content (optional)") },
+                label = { Text(contentOptionalText) },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -61,7 +80,7 @@ fun NotSettingsJetpackScreen(
                     onCheckedChange = { expandable = it },
                     enabled = content.isNotBlank()
                 )
-                Text("Expandable")
+                Text(expandableText)
             }
 
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -69,7 +88,7 @@ fun NotSettingsJetpackScreen(
                     checked = openMain,
                     onCheckedChange = { openMain = it }
                 )
-                Text("Open MainActivity on click")
+                Text(openMainText)
             }
 
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -77,13 +96,13 @@ fun NotSettingsJetpackScreen(
                     checked = replyAction,
                     onCheckedChange = { replyAction = it }
                 )
-                Text("Reply Action")
+                Text(replyActionText)
             }
 
             var expanded by remember { mutableStateOf(false) }
             Box {
                 Button(onClick = { expanded = true }) {
-                    Text("Priority: $priority")
+                    Text(stringResource(R.string.priority_label, priority.name))
                 }
                 DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                     NotificationType.values().forEach { type ->
@@ -102,7 +121,7 @@ fun NotSettingsJetpackScreen(
 
             Button(onClick = {
                 if (title.isBlank()) {
-                    Toast.makeText(context, "Title cannot be empty", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, titleCannotBeEmptyText, Toast.LENGTH_SHORT).show()
                     return@Button
                 }
 
@@ -114,7 +133,7 @@ fun NotSettingsJetpackScreen(
                 } else true
 
                 if (!permissionGranted) {
-                    Toast.makeText(context, "Notification permission not granted", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, notificationPermissionNotGrantedText, Toast.LENGTH_SHORT).show()
                     return@Button
                 }
 
@@ -125,18 +144,16 @@ fun NotSettingsJetpackScreen(
                     type = priority
                 )
 
-
                 notificationsHandler.showNotification(notification, openMain, expandable, replyAction)
-
-                com.example.myapplication.model.NotificationsRepository.add(notification)
+                NotificationsRepository.add(notification)
 
                 Toast.makeText(
                     context,
-                    "Notification sent with ID: ${notification.id}",
+                    context.getString(R.string.notification_sent_with_id, notification.id),
                     Toast.LENGTH_SHORT
                 ).show()
             }) {
-                Text("Send Notification")
+                Text(sendNotificationText)
             }
 
         }
@@ -145,9 +162,9 @@ fun NotSettingsJetpackScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Button(onClick = onNavigateToMessage) { Text("Messages") }
-            Button(onClick = onNavigateToEditor) { Text("Editor") }
-            Button(onClick = onNavigateToSettings) { Text("Settings") }
+            Button(onClick = onNavigateToMessage) { Text(messagesText) }
+            Button(onClick = onNavigateToEditor) { Text(editorText) }
+            Button(onClick = onNavigateToSettings) { Text(settingsText) }
         }
     }
 }

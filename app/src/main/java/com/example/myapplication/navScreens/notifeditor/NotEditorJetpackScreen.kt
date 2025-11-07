@@ -8,7 +8,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.myapplication.R
 import com.example.myapplication.model.NotificationsRepository
 
 @Composable
@@ -23,6 +25,21 @@ fun NotEditorJetpackScreen(
     var newTitle by remember { mutableStateOf("") }
     var newContent by remember { mutableStateOf("") }
 
+    // Все строки выносим заранее
+    val notificationIdText = stringResource(R.string.notification_id)
+    val newTitleText = stringResource(R.string.new_title)
+    val newContentText = stringResource(R.string.new_content_optional)
+    val invalidIdText = stringResource(R.string.invalid_id)
+    val errorNotExistText = stringResource(R.string.error_notification_not_exist)
+    val notificationUpdatedText = stringResource(R.string.notification_updated)
+    val updateText = stringResource(R.string.update)
+    val clearAllText = stringResource(R.string.clear_all)
+    val allClearedText = stringResource(R.string.all_notifications_cleared)
+    val noNotificationsText = stringResource(R.string.no_notifications_to_clear)
+    val messagesText = stringResource(R.string.messages)
+    val editorText = stringResource(R.string.editor)
+    val settingsText = stringResource(R.string.settings)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -34,21 +51,21 @@ fun NotEditorJetpackScreen(
             OutlinedTextField(
                 value = notifId,
                 onValueChange = { notifId = it },
-                label = { Text("Notification ID") },
+                label = { Text(notificationIdText) },
                 modifier = Modifier.fillMaxWidth()
             )
 
             OutlinedTextField(
                 value = newTitle,
                 onValueChange = { newTitle = it },
-                label = { Text("New Title") },
+                label = { Text(newTitleText) },
                 modifier = Modifier.fillMaxWidth()
             )
 
             OutlinedTextField(
                 value = newContent,
                 onValueChange = { newContent = it },
-                label = { Text("New Content (optional)") },
+                label = { Text(newContentText) },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -61,7 +78,7 @@ fun NotEditorJetpackScreen(
                 Button(onClick = {
                     val idInt = notifId.toIntOrNull()
                     if (idInt == null) {
-                        Toast.makeText(context, "Invalid ID", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, invalidIdText, Toast.LENGTH_SHORT).show()
                         return@Button
                     }
 
@@ -73,26 +90,24 @@ fun NotEditorJetpackScreen(
                     )
 
                     if (!success) {
-                        Toast.makeText(context, "Error: Notification with this ID does not exist", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, errorNotExistText, Toast.LENGTH_LONG).show()
                         return@Button
                     }
 
-                    Toast.makeText(context, "Notification updated", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, notificationUpdatedText, Toast.LENGTH_SHORT).show()
                 }) {
-                    Text("Update")
+                    Text(updateText)
                 }
-
-
 
                 Button(onClick = {
                     val success = NotificationsRepository.clear()
                     Toast.makeText(
                         context,
-                        if (success) "All notifications cleared" else "No notifications to clear",
+                        if (success) allClearedText else noNotificationsText,
                         Toast.LENGTH_SHORT
                     ).show()
                 }) {
-                    Text("Clear All")
+                    Text(clearAllText)
                 }
             }
         }
@@ -101,9 +116,9 @@ fun NotEditorJetpackScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Button(onClick = onNavigateToMessage) { Text("Messages") }
-            Button(onClick = onNavigateToEditor) { Text("Editor") }
-            Button(onClick = onNavigateToSettings) { Text("Settings") }
+            Button(onClick = onNavigateToMessage) { Text(messagesText) }
+            Button(onClick = onNavigateToEditor) { Text(editorText) }
+            Button(onClick = onNavigateToSettings) { Text(settingsText) }
         }
     }
 }

@@ -4,10 +4,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.myapplication.R
 import com.example.myapplication.navScreens.notifeditor.NotEditorJetpackScreen
 import com.example.myapplication.navScreens.notifsettings.NotSettingsJetpackScreen
 
@@ -24,7 +26,8 @@ fun BottomNavApp() {
             NavigationBar {
                 BottomNavItem.values().forEach { item ->
                     NavigationBarItem(
-                        icon = {},                         label = { Text(item.label) },
+                        icon = {},
+                        label = { Text(stringResource(item.labelResId)) },
                         selected = currentScreen == item,
                         onClick = {
                             navController.navigate(item.screen.destination) {
@@ -66,9 +69,7 @@ fun BottomNavApp() {
                     onNavigateToSettings = { navController.navigate(JetpackNavigationIds.SETTINGS_SCREEN.destination) }
                 )
             }
-
         }
-
     }
 }
 
@@ -77,8 +78,8 @@ fun MessageJetpackScreen(onNavigateToEditor: () -> Unit, onNavigateToSettings: (
     TODO("Not yet implemented")
 }
 
-enum class BottomNavItem(val screen: JetpackNavigationIds, val label: String) {
-    MESSAGES(JetpackNavigationIds.MESSAGE_SCREEN, "Messages"),
-    EDITOR(JetpackNavigationIds.EDITOR_SCREEN, "Editor"),
-    SETTINGS(JetpackNavigationIds.SETTINGS_SCREEN, "Settings")
+enum class BottomNavItem(val screen: JetpackNavigationIds, val labelResId: Int) {
+    MESSAGES(JetpackNavigationIds.MESSAGE_SCREEN, R.string.messages),
+    EDITOR(JetpackNavigationIds.EDITOR_SCREEN, R.string.editor),
+    SETTINGS(JetpackNavigationIds.SETTINGS_SCREEN, R.string.settings)
 }

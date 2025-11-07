@@ -7,10 +7,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.myapplication.R
 import com.example.myapplication.model.Message
 import com.example.myapplication.model.MessagesRepository
-import com.example.myapplication.navigation.BottomNavItem
+import com.example.myapplication.model.NotificationModel
+import com.example.myapplication.utils.NotificationsHandler
 
 @Composable
 fun MessageJetpackScreen(
@@ -18,7 +22,10 @@ fun MessageJetpackScreen(
     onNavigateToEditor: () -> Unit,
     onNavigateToSettings: () -> Unit
 ) {
+    val context = LocalContext.current
     var newMessage by remember { mutableStateOf("") }
+    val newMessageTitle = stringResource(R.string.new_message)
+    val addMessageText = stringResource(R.string.add_message)
 
     Column(
         modifier = Modifier
@@ -26,30 +33,42 @@ fun MessageJetpackScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.Center
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedTextField(
-                    value = newMessage,
-                    onValueChange = { newMessage = it },
-                    label = { Text("Enter message") },
-                    modifier = Modifier.fillMaxWidth(0.8f)
-                )
 
-                Button(onClick = {
-                    if (newMessage.isNotBlank()) {
-                        MessagesRepository.add(Message(newMessage))
-                        newMessage = ""
-                    }
-                }) {
-                    Text("Add Message")
+            OutlinedTextField(
+                value = newMessage,
+                onValueChange = { newMessage = it },
+                label = { Text(stringResource(R.string.enter_message)) },
+                modifier = Modifier.fillMaxWidth(0.8f)
+            )
+
+            Button(onClick = {
+                if (newMessage.isNotBlank()) {
+                    val msg = Message(newMessage)
+                    MessagesRepository.add(msg)
+
+                    val notificationsHandler = NotificationsHandler(context)
+                    val notification = NotificationModel(
+                        id = (System.currentTimeMillis() % 10000).toInt(),
+                        title = newMessageTitle,
+                        content = newMessage
+                    )
+                    notificationsHandler.showNotification(
+                        notification,
+                        openMainActivity = true,
+                        expandable = true,
+                        replyActionEnabled = true
+                    )
+
+                    newMessage = ""
                 }
+            }) {
+                Text(addMessageText)
             }
         }
-
 
         LazyColumn(
             modifier = Modifier
@@ -57,7 +76,7 @@ fun MessageJetpackScreen(
                 .weight(1f),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            items(MessagesRepository.getAll()) { msg ->
+            items(MessagesRepository.messages) { msg ->
                 Text(msg.text, modifier = Modifier.padding(4.dp))
             }
         }
@@ -66,10 +85,9 @@ fun MessageJetpackScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Button(onClick = onNavigateToMessage) { Text("Messages") }
-            Button(onClick = onNavigateToEditor) { Text("Editor") }
-            Button(onClick = onNavigateToSettings) { Text("Settings") }
+            Button(onClick = onNavigateToMessage) { Text(stringResource(R.string.messages)) }
+            Button(onClick = onNavigateToEditor) { Text(stringResource(R.string.editor)) }
+            Button(onClick = onNavigateToSettings) { Text(stringResource(R.string.settings)) }
         }
     }
-
 }

@@ -1,3 +1,32 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string name="messages">Сообщения</string>
+    <string name="editor">Редактор</string>
+    <string name="new_message">Новое сообщение</string>
+    <string name="settings">Настройки</string>
+    <string name="enter_message">Ввести сообщение</string>
+    <string name="title_label">Заголовок</string>
+    <string name="content_optional">Содержание (опционально)</string>
+    <string name="expandable">Раскрываемое</string>
+    <string name="open_main_activity">Открывать главное при клике</string>
+    <string name="reply_action">Действие ответа</string>
+    <string name="priority_label">Приоритет: %1$s</string>
+    <string name="title_cannot_be_empty">Заголовок не может быть пустым</string>
+    <string name="notification_permission_not_granted">Разрешение на уведомления не предоставлено</string>
+    <string name="send_notification">Отправить уведомление</string>
+    <string name="notification_sent_with_id">Уведомление отправлено с ID: %1$d</string>
+    <string name="channel_name">Уведомления приложения</string>
+    <string name="channel_description">Канал для уведомлений приложения</string>
+    <string name="reply">Ответить</string>
+    <string name="add_message">Добавить сообщение</string>
+    <string name="invalid_id">Неверный ID</string>
+    <string name="error_notification_not_exist">Ошибка: уведомление с таким ID не существует</string>
+    <string name="all_notifications_cleared">Все уведомления очищены</string>
+    <string name="no_notifications_to_clear">Нет уведомлений для очистки</string>
+    <string name="update">Обновить</string>
+    <string name="notification_id">ID уведомления</string>
+    <string name="new_title">Новый заголовок</string>
+    <string name="new_content_optional">Новое содержание (опционально)</string>
+    <string name="notification_updated">Уведомление обновлено</string>
+    <string name="clear_all">Очистить все</string>
 </resources>
