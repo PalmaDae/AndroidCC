@@ -1,4 +1,3 @@
 package com.example.myapplication.model
 
-class Message {
-}
+data class Message(val text: String)
