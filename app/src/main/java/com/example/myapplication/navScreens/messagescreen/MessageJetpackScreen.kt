@@ -1,83 +1,75 @@
 package com.example.myapplication.navScreens.messagescreen
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.model.Message
 import com.example.myapplication.model.MessagesRepository
+import com.example.myapplication.navigation.BottomNavItem
 
 @Composable
 fun MessageJetpackScreen(
+    onNavigateToMessage: () -> Unit,
     onNavigateToEditor: () -> Unit,
-    onNavigateToSettings: () -> Unit,
+    onNavigateToSettings: () -> Unit
 ) {
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)
-    ) {
-        Row(modifier = Modifier
+    var newMessage by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
         ) {
-            Button(onClick = onNavigateToSettings) {
-                Text("Settings")
-            }
-            Button(onClick = onNavigateToEditor) {
-                Text("Editor")
+            Column(horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(
+                    value = newMessage,
+                    onValueChange = { newMessage = it },
+                    label = { Text("Enter message") },
+                    modifier = Modifier.fillMaxWidth(0.8f)
+                )
+
+                Button(onClick = {
+                    if (newMessage.isNotBlank()) {
+                        MessagesRepository.add(Message(newMessage))
+                        newMessage = ""
+                    }
+                }) {
+                    Text("Add Message")
+                }
             }
         }
 
-        Spacer(modifier = Modifier
-            .height(16.dp)
-        )
 
-        var newMessage by remember { mutableStateOf("") }
-
-
-        OutlinedTextField(
-            value = newMessage,
-            onValueChange = { newMessage = it },
-            label = {Text("Enter message") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier
-            .height(8.dp)
-        )
-
-        Button(onClick = {
-            if (newMessage.isNotBlank()) {
-                MessagesRepository.add(Message(newMessage))
-                newMessage = ""
-            }
-        }) {
-            Text("Add Message")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(MessagesRepository.messages) { msg ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            items(MessagesRepository.getAll()) { msg ->
                 Text(msg.text, modifier = Modifier.padding(4.dp))
             }
         }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Button(onClick = onNavigateToMessage) { Text("Messages") }
+            Button(onClick = onNavigateToEditor) { Text("Editor") }
+            Button(onClick = onNavigateToSettings) { Text("Settings") }
+        }
     }
+
 }

@@ -1,7 +1,6 @@
 package com.example.myapplication.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
 
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -18,18 +17,26 @@ fun JetpackNavHost(navController: NavHostController) {
     ) {
         composable(JetpackNavigationIds.MESSAGE_SCREEN.destination) {
             MessageJetpackScreen(
+                onNavigateToMessage = { navController.navigate(JetpackNavigationIds.MESSAGE_SCREEN.destination) },
                 onNavigateToEditor = { navController.navigate(JetpackNavigationIds.EDITOR_SCREEN.destination) },
                 onNavigateToSettings = { navController.navigate(JetpackNavigationIds.SETTINGS_SCREEN.destination) }
             )
         }
+
         composable(JetpackNavigationIds.EDITOR_SCREEN.destination) {
             NotEditorJetpackScreen(
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateToMessage = { navController.navigate(JetpackNavigationIds.MESSAGE_SCREEN.destination) },
+                onNavigateToEditor = { navController.navigate(JetpackNavigationIds.EDITOR_SCREEN.destination) },
+                onNavigateToSettings = { navController.navigate(JetpackNavigationIds.SETTINGS_SCREEN.destination) },
+                onBack = { navController.popBackStack(); true }
             )
         }
+
         composable(JetpackNavigationIds.SETTINGS_SCREEN.destination) {
             NotSettingsJetpackScreen(
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateToMessage = { navController.navigate(JetpackNavigationIds.MESSAGE_SCREEN.destination) },
+                onNavigateToEditor = { navController.navigate(JetpackNavigationIds.EDITOR_SCREEN.destination) },
+                onNavigateToSettings = { navController.navigate(JetpackNavigationIds.SETTINGS_SCREEN.destination) }
             )
         }
     }
