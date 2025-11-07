@@ -124,11 +124,21 @@ fun NotSettingsJetpackScreen(
                     content = content.ifBlank { null },
                     type = priority
                 )
+
+
                 notificationsHandler.showNotification(notification, openMain, expandable, replyAction)
-                Toast.makeText(context, "Notification sent", Toast.LENGTH_SHORT).show()
+
+                com.example.myapplication.model.NotificationsRepository.add(notification)
+
+                Toast.makeText(
+                    context,
+                    "Notification sent with ID: ${notification.id}",
+                    Toast.LENGTH_SHORT
+                ).show()
             }) {
                 Text("Send Notification")
             }
+
         }
 
         Row(

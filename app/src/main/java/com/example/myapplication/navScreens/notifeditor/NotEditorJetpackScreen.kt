@@ -59,20 +59,30 @@ fun NotEditorJetpackScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Button(onClick = {
-                    val id = notifId.toIntOrNull()
-                    if (id == null) {
+                    val idInt = notifId.toIntOrNull()
+                    if (idInt == null) {
                         Toast.makeText(context, "Invalid ID", Toast.LENGTH_SHORT).show()
                         return@Button
                     }
-                    val success = NotificationsRepository.update(id, newTitle, newContent.ifBlank { null })
-                    Toast.makeText(
+
+                    val success = NotificationsRepository.update(
                         context,
-                        if (success) "Notification updated" else "Notification not found",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                        idInt,
+                        newTitle,
+                        newContent.ifBlank { null }
+                    )
+
+                    if (!success) {
+                        Toast.makeText(context, "Error: Notification with this ID does not exist", Toast.LENGTH_LONG).show()
+                        return@Button
+                    }
+
+                    Toast.makeText(context, "Notification updated", Toast.LENGTH_SHORT).show()
                 }) {
                     Text("Update")
                 }
+
+
 
                 Button(onClick = {
                     val success = NotificationsRepository.clear()

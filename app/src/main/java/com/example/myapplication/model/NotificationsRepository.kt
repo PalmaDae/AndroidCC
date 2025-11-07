@@ -1,25 +1,47 @@
 package com.example.myapplication.model
 
-import androidx.compose.runtime.mutableStateListOf
+import android.content.Context
+import com.example.myapplication.utils.NotificationsHandler
 
 object NotificationsRepository {
-    private val _notifications = mutableStateListOf<NotificationModel>()
-    val notifications: List<NotificationModel> get() = _notifications
+
+    private val notifications = mutableMapOf<Int, NotificationModel>()
 
     fun add(notification: NotificationModel) {
-        _notifications.add(notification)
+        notifications[notification.id] = notification
     }
 
-    fun update(id: Int, newTitle: String, newContent: String?): Boolean {
-        val notif = _notifications.find { it.id == id } ?: return false
-        val index = _notifications.indexOf(notif)
-        _notifications[index] = notif.copy(title = newTitle, content = newContent)
+    fun get(id: Int): NotificationModel? = notifications[id]
+
+    fun update(
+        context: Context,
+        id: Int,
+        newTitle: String?,
+        newContent: String?
+    ): Boolean {
+        val oldNotif = notifications[id] ?: return false
+
+        val updated = oldNotif.copy(
+            title = newTitle?.ifBlank { oldNotif.title } ?: oldNotif.title,
+            content = newContent?.ifBlank { oldNotif.content } ?: oldNotif.content
+        )
+
+        notifications[id] = updated
+
+        NotificationsHandler(context).showNotification(
+            updated,
+            openMainActivity = false,
+            expandable = updated.content != null,
+            replyActionEnabled = false
+        )
+
         return true
     }
+
 
     fun clear(): Boolean {
-        if (_notifications.isEmpty()) return false
-        _notifications.clear()
-        return true
+        val had = notifications.isNotEmpty()
+        notifications.clear()
+        return had
     }
 }
