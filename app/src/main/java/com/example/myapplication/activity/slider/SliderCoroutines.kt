@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -15,19 +16,19 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Preview
 @Composable
-fun SliderAdvancedExample() {
-    var sliderPosition by remember { mutableFloatStateOf(0f) }
+fun SliderCoroutines() {
+    var sliderPosition by remember { mutableStateOf(10f) }
     Column {
         Slider(
             value = sliderPosition,
             onValueChange = { sliderPosition = it },
+            steps = 17,
+            valueRange = 10f..100f,
             colors = SliderDefaults.colors(
                 thumbColor = MaterialTheme.colorScheme.secondary,
                 activeTrackColor = MaterialTheme.colorScheme.secondary,
                 inactiveTrackColor = MaterialTheme.colorScheme.secondaryContainer,
             ),
-            steps = 3,
-            valueRange = 0f..50f
         )
         Text(text = sliderPosition.toString())
     }
