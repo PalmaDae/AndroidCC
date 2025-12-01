@@ -1,0 +1,35 @@
+package com.example.myapplication.activity.slider
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.tooling.preview.Preview
+
+
+@Preview
+@Composable
+fun SliderCoroutines() {
+    var sliderPosition by remember { mutableStateOf(10f) }
+    Column {
+        Slider(
+            value = sliderPosition,
+            onValueChange = { sliderPosition = it },
+            steps = 17,
+            valueRange = 10f..100f,
+            colors = SliderDefaults.colors(
+                thumbColor = MaterialTheme.colorScheme.secondary,
+                activeTrackColor = MaterialTheme.colorScheme.secondary,
+                inactiveTrackColor = MaterialTheme.colorScheme.secondaryContainer,
+            ),
+        )
+        Text(text = sliderPosition.toString())
+    }
+}

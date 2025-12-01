@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string name="all_coroutines_done">Все корутины завершены</string>
+    <string name="toast_exception">Toast: Exception!</string>
+    <string name="snackbar_exception">Snackbar: Exception!</string>
+    <string name="default_dispatcher">Default</string>
+    <string name="dispatcher_io">IO</string>
+    <string name="dispatcher_main">Main</string>
+    <string name="coroutines_count">Количество корутин</string>
+    <string name="sequential">Последовательно</string>
+    <string name="parallel">Параллельно</string>
+    <string name="delayed_start">Отложенный старт</string>
+    <string name="start_coroutines">Запустить корутины</string>
 </resources>
