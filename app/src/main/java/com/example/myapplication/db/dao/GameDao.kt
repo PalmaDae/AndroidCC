@@ -12,13 +12,13 @@ import kotlinx.coroutines.flow.Flow
 interface GameDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addGame(game: GameEntity)
+    suspend fun addGame(game: GameEntity)
 
     @Query("SELECT * FROM games ORDER BY  id DESC")
     fun getAllGames(): Flow<List<GameEntity>>
 
     @Delete
-    fun deleteGame(game: GameEntity)
+    suspend fun deleteGame(game: GameEntity)
 
     @Query("SELECT * FROM games ORDER BY title ASC")
     fun getGamesSortedByTitle(): Flow<List<GameEntity>>
