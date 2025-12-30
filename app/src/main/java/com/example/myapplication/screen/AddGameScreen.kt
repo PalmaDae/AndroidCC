@@ -67,9 +67,13 @@ fun AddGameScreen(navController: NavController) {
             ) {
                 OutlinedTextField(
                     value = title,
-                    onValueChange = { title = it },
+                    onValueChange = { if (it.length <= 50) title = it },
                     label = { Text("Game Title") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    isError = title.isBlank(),
+                    supportingText = {
+                        if (title.isBlank()) Text("Required field")
+                    }
                 )
 
                 ExposedDropdownMenuBox(

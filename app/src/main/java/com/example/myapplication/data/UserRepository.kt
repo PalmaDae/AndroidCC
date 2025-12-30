@@ -16,7 +16,12 @@ class UserRepository(
 
     suspend fun createNewUser(userModel: UserDataModel) {
         withContext(ioDispatcher) {
-            val entity: UserEntity = UserEntity(
+            val existingUser = userDao.value.getUserByLogin(userModel.login)
+            if (existingUser != null) {
+                throw Exception("User with this login already exists")
+            }
+
+            val entity = UserEntity(
                 login = userModel.login,
                 name = userModel.name,
                 hashPass = HashUtil.hashPassword(userModel.password)

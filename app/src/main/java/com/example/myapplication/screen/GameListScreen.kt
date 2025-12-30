@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
@@ -20,6 +21,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -29,6 +31,8 @@ import com.example.myapplication.db.entity.GameEntity
 import com.example.myapplication.di.ServiceLocator
 import com.example.myapplication.navigation.AddGame
 import com.example.myapplication.navigation.Profile
+import com.example.myapplication.ui.shimmerEffect
+import com.example.myapplication.viewmodel.GameListUiState
 import com.example.myapplication.viewmodel.GameListViewModel
 import com.example.myapplication.viewmodel.SortType
 import kotlinx.coroutines.Job
@@ -42,7 +46,7 @@ fun GameListScreen(
     navController: NavController,
     viewModel: GameListViewModel = viewModel()
 ) {
-    val games by viewModel.games.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
     val currentSort by viewModel.sortType.collectAsState()
 
     val scope = rememberCoroutineScope()
@@ -69,22 +73,35 @@ fun GameListScreen(
             }
         }
     ) { padding ->
-        if (games.isEmpty()) {
-            Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                Text("No games added yet")
+        when (val state = uiState) {
+            is GameListUiState.Loading -> {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize().padding(padding),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(6) { GameListItemPlaceholder() }
+                }
             }
-        } else {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize().padding(padding),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(games) { game ->
-                    GameItem(game = game, onDelete = {
-                        scope.launch {
-                            ServiceLocator.getGameRepository().deleteGame(game)
+            is GameListUiState.Success -> {
+                if (state.games.isEmpty()) {
+                    Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
+                        Text("No games added yet")
+                    }
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize().padding(padding),
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(state.games) { game: GameEntity ->
+                            GameItem(game = game, onDelete = {
+                                scope.launch {
+                                    ServiceLocator.getGameRepository().deleteGame(game)
+                                }
+                            })
                         }
-                    })
+                    }
                 }
             }
         }
@@ -175,5 +192,40 @@ fun SortOption(label: String, isSelected: Boolean, onClick: () -> Unit) {
     ) {
         RadioButton(selected = isSelected, onClick = onClick)
         Text(text = label, modifier = Modifier.padding(start = 8.dp))
+    }
+}
+
+@Composable
+fun GameListItemPlaceholder() {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Row(modifier = Modifier.padding(16.dp)) {
+            Box(
+                modifier = Modifier
+                    .size(50.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .shimmerEffect()
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Column {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.7f)
+                        .height(20.dp)
+                        .shimmerEffect()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.4f)
+                        .height(14.dp)
+                        .shimmerEffect()
+                )
+            }
+        }
     }
 }

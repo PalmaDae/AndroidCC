@@ -5,14 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.myapplication.data.UserDataRepository
 import com.example.myapplication.db.entity.GameEntity
 import com.example.myapplication.di.ServiceLocator
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
-enum class SortType {
-    NAME, RATING, STATUS
+enum class SortType { NAME, RATING, STATUS }
+sealed class GameListUiState {
+    data object Loading : GameListUiState()
+    data class Success(val games: List<GameEntity>) : GameListUiState()
 }
 
 class GameListViewModel : ViewModel() {
@@ -22,14 +22,20 @@ class GameListViewModel : ViewModel() {
     private val _sortType = MutableStateFlow(SortType.NAME)
     val sortType: StateFlow<SortType> = _sortType
 
-    val games: StateFlow<List<GameEntity>> = gameRepository.getGamesForUser(currentLogin)
+    val uiState: StateFlow<GameListUiState> = gameRepository.getGamesForUser(currentLogin)
         .combine(_sortType) { list, sort ->
-            when (sort) {
+            val sortedList = when (sort) {
                 SortType.NAME -> list.sortedBy { it.title }
                 SortType.RATING -> list.sortedByDescending { it.rating }
                 SortType.STATUS -> list.sortedBy { it.status }
             }
-        }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+            GameListUiState.Success(sortedList)
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = GameListUiState.Loading
+        )
 
     fun setSortType(type: SortType) {
         _sortType.value = type

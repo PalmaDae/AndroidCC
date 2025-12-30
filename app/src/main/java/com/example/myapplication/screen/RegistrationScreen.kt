@@ -73,29 +73,25 @@ fun RegistrationScreen(navController: NavController) {
 
             Button(
                 onClick = {
-                    if (login.isBlank() || name.isBlank() || password.isBlank()) {
-                        scope.launch { snackbarHostState.showSnackbar("Please fill all fields") }
-                        return@Button
-                    }
-
                     scope.launch {
-                        try {
-                            val newUser = UserDataModel(login, name, password)
-                            val newId = ServiceLocator.getUserRepository().createNewUser(newUser)
+                        if (login.isBlank() || password.isBlank() || name.isBlank()) {
+                            snackbarHostState.showSnackbar("All fields are required")
+                            return@launch
+                        }
 
-                            ServiceLocator.getUserRepository().createNewUser(newUser)
+                        try {
+                            val userModel = UserDataModel(login, name, password)
+                            ServiceLocator.getUserRepository().createNewUser(userModel)
 
                             UserDataRepository.saveSession(login)
-
                             navController.navigate(GameList) {
                                 popUpTo(Registration) { inclusive = true }
                             }
                         } catch (e: Exception) {
-                            snackbarHostState.showSnackbar("Error: ${e.message}")
+                            snackbarHostState.showSnackbar(e.message ?: "Registration failed")
                         }
                     }
-                },
-                modifier = Modifier.fillMaxWidth()
+                }
             ) {
                 Text("Register")
             }
