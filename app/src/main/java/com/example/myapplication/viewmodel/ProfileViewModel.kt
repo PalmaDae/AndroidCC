@@ -24,6 +24,10 @@ class ProfileViewModel : ViewModel() {
     private fun loadProfileData() {
         val login = UserDataRepository.getCurrentLogin() ?: ""
 
+        if (login == null) {
+            return
+        }
+
         viewModelScope.launch {
             val user = userRepository.getUserByLogin(login)
 

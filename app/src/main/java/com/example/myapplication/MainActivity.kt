@@ -20,12 +20,10 @@ class MainActivity : ComponentActivity() {
 
         ServiceLocator.initDatabase(applicationContext)
 
-        val sessionManager = SessionManager(this)
-
         val sharedPrefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
         UserDataRepository.provideSharedPrefs(sharedPrefs)
 
-        val startScreen = if (sessionManager.isLoggedIn()) {
+        val startScreen = if (UserDataRepository.isLoggedIn()) {
             GameList
         } else {
             Login
