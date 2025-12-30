@@ -17,6 +17,10 @@ object UserDataRepository {
         return sharedPref?.getBoolean(KEY_IS_LOGGED_IN, false) ?: false
     }
 
+    fun getCurrentLogin(): String? {
+        return sharedPref?.getString(KEY_USER_LOGIN, null)
+    }
+
     fun saveSession(login: String) {
         sharedPref?.edit()?.apply {
             putBoolean(KEY_IS_LOGGED_IN, true)

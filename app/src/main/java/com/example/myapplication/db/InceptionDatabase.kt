@@ -7,7 +7,7 @@ import com.example.myapplication.db.dao.UserDao
 import com.example.myapplication.db.entity.GameEntity
 import com.example.myapplication.db.entity.UserEntity
 
-@Database(entities = [UserEntity::class, GameEntity::class], version = 2)
+@Database(entities = [UserEntity::class, GameEntity::class], version = 3, exportSchema = false)
 abstract class InceptionDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun gameDao(): GameDao

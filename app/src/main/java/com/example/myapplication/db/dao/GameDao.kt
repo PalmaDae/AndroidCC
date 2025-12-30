@@ -14,15 +14,15 @@ interface GameDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addGame(game: GameEntity)
 
-    @Query("SELECT * FROM games ORDER BY  id DESC")
-    fun getAllGames(): Flow<List<GameEntity>>
+    @Query("SELECT * FROM games WHERE user_login = :login ORDER BY id DESC")
+    fun getGamesForUser(login: String): Flow<List<GameEntity>>
 
     @Delete
     suspend fun deleteGame(game: GameEntity)
 
-    @Query("SELECT * FROM games ORDER BY title ASC")
-    fun getGamesSortedByTitle(): Flow<List<GameEntity>>
+    @Query("SELECT * FROM games WHERE user_login = :login ORDER BY title ASC")
+    fun getGamesSortedByTitle(login: String): Flow<List<GameEntity>>
 
-    @Query("SELECT * FROM games ORDER BY rating DESC")
-    fun getGamesSortedByRating(): Flow<List<GameEntity>>
+    @Query("SELECT * FROM games WHERE user_login = :login ORDER BY rating DESC")
+    fun getGamesSortedByRating(login: String): Flow<List<GameEntity>>
 }

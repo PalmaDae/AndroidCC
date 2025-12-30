@@ -11,8 +11,6 @@ class GameRepository(
 ) {
     private val gameDao = lazy { ServiceLocator.getDatabase().gameDao() }
 
-    val allGames: Flow<List<GameEntity>> = gameDao.value.getAllGames()
-
     suspend fun addGame(game: GameEntity) {
         withContext(ioDispatcher) {
             gameDao.value.addGame(game)
@@ -23,5 +21,9 @@ class GameRepository(
         withContext(ioDispatcher) {
             gameDao.value.deleteGame(game)
         }
+    }
+
+    fun getGamesForUser(login: String): Flow<List<GameEntity>> {
+        return gameDao.value.getGamesForUser(login)
     }
 }

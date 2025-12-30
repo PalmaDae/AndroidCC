@@ -1,8 +1,10 @@
 package com.example.myapplication.data
 
+import com.example.myapplication.db.entity.UserEntity
 import com.example.myapplication.di.ServiceLocator
 import com.example.myapplication.mapper.UserModelMapper
 import com.example.myapplication.model.UserDataModel
+import com.example.myapplication.utils.HashUtil
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
@@ -12,9 +14,13 @@ class UserRepository(
 ) {
     private val userDao = lazy { ServiceLocator.getDatabase().userDao() }
 
-    suspend fun createNewUser(userData: UserDataModel) {
+    suspend fun createNewUser(userModel: UserDataModel) {
         withContext(ioDispatcher) {
-            val entity = mapper.map(input = userData)
+            val entity: UserEntity = UserEntity(
+                login = userModel.login,
+                name = userModel.name,
+                hashPass = HashUtil.hashPassword(userModel.password)
+            )
             userDao.value.putUserData(entity)
         }
     }

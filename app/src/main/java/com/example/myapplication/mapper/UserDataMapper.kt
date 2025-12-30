@@ -18,7 +18,7 @@ class UserModelMapper {
         return UserDataModel(
             login = input.login,
             name = input.name,
-            password = ""
+            password = input.hashPass
         )
     }
 }

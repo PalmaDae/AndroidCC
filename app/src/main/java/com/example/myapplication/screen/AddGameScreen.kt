@@ -12,6 +12,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.myapplication.data.UserDataRepository
 import com.example.myapplication.db.entity.GameEntity
 import com.example.myapplication.di.ServiceLocator
 import com.example.myapplication.slider.RatingSlider
@@ -24,6 +25,8 @@ fun AddGameScreen(navController: NavController) {
     var status by remember { mutableStateOf("Planned") }
     var rating by remember { mutableFloatStateOf(5f) }
     var impressions by remember { mutableStateOf("") }
+
+    val currentLogin = UserDataRepository.getCurrentLogin()
 
     var expanded by remember { mutableStateOf(false) }
     val statusOptions = listOf("Completed", "Playing", "Planned")
@@ -124,6 +127,7 @@ fun AddGameScreen(navController: NavController) {
 
                         scope.launch {
                             val game = GameEntity(
+                                userLogin = currentLogin ?: "",
                                 title = title,
                                 rating = if (status == "Planned") 0 else rating.toInt(),
                                 status = status,

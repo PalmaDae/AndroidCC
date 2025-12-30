@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.myapplication.data.UserDataRepository
 import com.example.myapplication.db.entity.GameEntity
 import com.example.myapplication.di.ServiceLocator
 import com.example.myapplication.navigation.AddGame
@@ -25,8 +26,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun GameListScreen(navController: NavController) {
     val gameRepository = ServiceLocator.getGameRepository()
-    val games by gameRepository.allGames.collectAsState(initial = emptyList())
     val scope = rememberCoroutineScope()
+    val currentLogin = UserDataRepository.getCurrentLogin() ?: ""
+    val games by gameRepository.getGamesForUser(currentLogin ?: "").collectAsState(initial = emptyList())
 
     Scaffold(
         topBar = {

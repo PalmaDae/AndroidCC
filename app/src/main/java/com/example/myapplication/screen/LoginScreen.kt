@@ -60,13 +60,18 @@ fun LoginScreen(navController: NavController) {
                     scope.launch {
                         val user = ServiceLocator.getUserRepository().getUserByLogin(login)
 
-                        if (user != null && HashUtil.checkPassword(password, user.password)) {
-                            UserDataRepository.saveSession(login)
-                            navController.navigate(GameList) {
-                                popUpTo(com.example.myapplication.navigation.Login) { inclusive = true }
+                        if (user != null) {
+                            val isPasswordCorrect = HashUtil.checkPassword(password, user.password)
+                            if (isPasswordCorrect) {
+                                UserDataRepository.saveSession(login)
+                                navController.navigate(GameList) {
+                                    popUpTo(com.example.myapplication.navigation.Login) { inclusive = true }
+                                }
+                            } else {
+                                snackbarHostState.showSnackbar("Invalid password")
                             }
                         } else {
-                            snackbarHostState.showSnackbar("Invalid login or password")
+                            snackbarHostState.showSnackbar("User not found")
                         }
                     }
                 },

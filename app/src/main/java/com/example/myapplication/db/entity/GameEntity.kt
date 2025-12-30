@@ -8,6 +8,8 @@ import androidx.room.PrimaryKey
 data class GameEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
+    @ColumnInfo(name = "user_login")
+    val userLogin: String,
     @ColumnInfo(name = "title")
     val title: String,
     @ColumnInfo(name = "rating")

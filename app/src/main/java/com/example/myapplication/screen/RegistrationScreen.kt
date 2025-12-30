@@ -81,6 +81,8 @@ fun RegistrationScreen(navController: NavController) {
                     scope.launch {
                         try {
                             val newUser = UserDataModel(login, name, password)
+                            val newId = ServiceLocator.getUserRepository().createNewUser(newUser)
+
                             ServiceLocator.getUserRepository().createNewUser(newUser)
 
                             UserDataRepository.saveSession(login)
