@@ -19,10 +19,10 @@ fun NavigationHolder(startDestination: Any) {
         startDestination = startDestination
     ) {
         composable<Login> {
-            LoginScreen()
+            LoginScreen(navController = navController)
         }
         composable<Registration> {
-            RegistrationScreen()
+            RegistrationScreen(navController = navController)
         }
         composable<GameList> {
             GameListScreen()
