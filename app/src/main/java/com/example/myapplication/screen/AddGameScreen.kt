@@ -8,10 +8,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.myapplication.R
 import com.example.myapplication.data.UserDataRepository
 import com.example.myapplication.db.entity.GameEntity
 import com.example.myapplication.di.ServiceLocator
@@ -21,18 +23,24 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddGameScreen(navController: NavController) {
+    val statusPlanned = stringResource(R.string.status_planned)
+    val statusPlaying = stringResource(R.string.status_playing)
+    val statusCompleted = stringResource(R.string.status_completed)
+
     var title by remember { mutableStateOf("") }
-    var status by remember { mutableStateOf("Planned") }
+    var status by remember { mutableStateOf(statusPlanned) }
     var rating by remember { mutableFloatStateOf(5f) }
     var impressions by remember { mutableStateOf("") }
 
     val currentLogin = UserDataRepository.getCurrentLogin()
 
     var expanded by remember { mutableStateOf(false) }
-    val statusOptions = listOf("Completed", "Playing", "Planned")
+    val statusOptions = listOf(statusCompleted, statusPlaying, statusPlanned)
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    val titleRequiredMsg = stringResource(R.string.add_game_snackbar_error)
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -52,7 +60,7 @@ fun AddGameScreen(navController: NavController) {
                 contentAlignment = Alignment.CenterStart
             ) {
                 Text(
-                    text = "Add New Game",
+                    text = stringResource(R.string.add_game_screen_title),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
@@ -68,11 +76,11 @@ fun AddGameScreen(navController: NavController) {
                 OutlinedTextField(
                     value = title,
                     onValueChange = { if (it.length <= 50) title = it },
-                    label = { Text("Game Title") },
+                    label = { Text(stringResource(R.string.add_game_label_title)) },
                     modifier = Modifier.fillMaxWidth(),
                     isError = title.isBlank(),
                     supportingText = {
-                        if (title.isBlank()) Text("Required field")
+                        if (title.isBlank()) Text(stringResource(R.string.add_game_error_required))
                     }
                 )
 
@@ -85,7 +93,7 @@ fun AddGameScreen(navController: NavController) {
                         value = status,
                         onValueChange = {},
                         readOnly = true,
-                        label = { Text("Status") },
+                        label = { Text(stringResource(R.string.add_game_label_status)) },
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                         modifier = Modifier.menuAnchor().fillMaxWidth()
                     )
@@ -105,7 +113,7 @@ fun AddGameScreen(navController: NavController) {
                     }
                 }
 
-                if (status == "Completed" || status == "Playing") {
+                if (status == statusCompleted || status == statusPlaying) {
                     RatingSlider(
                         rating = rating,
                         onRatingChange = { rating = it }
@@ -115,7 +123,7 @@ fun AddGameScreen(navController: NavController) {
                 OutlinedTextField(
                     value = impressions,
                     onValueChange = { impressions = it },
-                    label = { Text("Your Impressions") },
+                    label = { Text(stringResource(R.string.add_game_label_impressions)) },
                     modifier = Modifier.fillMaxWidth(),
                     minLines = 3
                 )
@@ -125,7 +133,7 @@ fun AddGameScreen(navController: NavController) {
                 Button(
                     onClick = {
                         if (title.isBlank()) {
-                            scope.launch { snackbarHostState.showSnackbar("Title is required") }
+                            scope.launch { snackbarHostState.showSnackbar(titleRequiredMsg) }
                             return@Button
                         }
 
@@ -133,7 +141,7 @@ fun AddGameScreen(navController: NavController) {
                             val game = GameEntity(
                                 userLogin = currentLogin ?: "",
                                 title = title,
-                                rating = if (status == "Planned") 0 else rating.toInt(),
+                                rating = if (status == statusPlanned) 0 else rating.toInt(),
                                 status = status,
                                 impres = impressions
                             )
@@ -143,14 +151,14 @@ fun AddGameScreen(navController: NavController) {
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Save Game")
+                    Text(stringResource(R.string.add_game_button_save))
                 }
 
                 TextButton(
                     onClick = { navController.popBackStack() },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.add_game_button_cancel))
                 }
             }
         }

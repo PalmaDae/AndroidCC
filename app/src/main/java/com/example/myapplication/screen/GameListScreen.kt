@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.List
@@ -23,10 +22,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.myapplication.data.UserDataRepository
+import com.example.myapplication.R
 import com.example.myapplication.db.entity.GameEntity
 import com.example.myapplication.di.ServiceLocator
 import com.example.myapplication.navigation.AddGame
@@ -35,10 +35,7 @@ import com.example.myapplication.ui.shimmerEffect
 import com.example.myapplication.viewmodel.GameListUiState
 import com.example.myapplication.viewmodel.GameListViewModel
 import com.example.myapplication.viewmodel.SortType
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,20 +53,20 @@ fun GameListScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("My Game Collection") },
+                title = { Text(stringResource(R.string.game_list_title)) },
                 actions = {
                     IconButton(onClick = { showSheet = true }) {
-                        Icon(Icons.Default.List, contentDescription = "Sort")
+                        Icon(Icons.Default.List, contentDescription = stringResource(R.string.desc_sort))
                     }
                     IconButton(onClick = { navController.navigate(Profile) }) {
-                        Icon(Icons.Default.Person, contentDescription = "Profile")
+                        Icon(Icons.Default.Person, contentDescription = stringResource(R.string.desc_profile))
                     }
                 }
             )
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { navController.navigate(AddGame) }) {
-                Icon(Icons.Default.Add, contentDescription = "Add Game")
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.desc_add_game))
             }
         }
     ) { padding ->
@@ -86,7 +83,7 @@ fun GameListScreen(
             is GameListUiState.Success -> {
                 if (state.games.isEmpty()) {
                     Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                        Text("No games added yet")
+                        Text(stringResource(R.string.game_list_empty))
                     }
                 } else {
                     LazyColumn(
@@ -117,20 +114,20 @@ fun GameListScreen(
                         .padding(start = 16.dp, end = 16.dp, bottom = 40.dp)
                 ) {
                     Text(
-                        "Sort by",
+                        text = stringResource(R.string.game_list_sort_by),
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
 
-                    SortOption("Name", currentSort == SortType.NAME) {
+                    SortOption(stringResource(R.string.sort_name), currentSort == SortType.NAME) {
                         viewModel.setSortType(SortType.NAME)
                         showSheet = false
                     }
-                    SortOption("Rating", currentSort == SortType.RATING) {
+                    SortOption(stringResource(R.string.sort_rating), currentSort == SortType.RATING) {
                         viewModel.setSortType(SortType.RATING)
                         showSheet = false
                     }
-                    SortOption("Status", currentSort == SortType.STATUS) {
+                    SortOption(stringResource(R.string.sort_status), currentSort == SortType.STATUS) {
                         viewModel.setSortType(SortType.STATUS)
                         showSheet = false
                     }
@@ -161,19 +158,19 @@ fun GameItem(game: GameEntity, onDelete: () -> Unit) {
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
-                    text = "Status: ${game.status}",
+                    text = stringResource(R.string.game_list_status_label, game.status),
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray
                 )
                 Text(
-                    text = "Rating: ${game.rating}/10",
+                    text = stringResource(R.string.game_list_rating_label, game.rating),
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
             IconButton(onClick = onDelete) {
                 Icon(
                     imageVector = Icons.Default.Delete,
-                    contentDescription = "Delete",
+                    contentDescription = stringResource(R.string.desc_delete),
                     tint = Color.Red
                 )
             }

@@ -1,13 +1,17 @@
 package com.example.myapplication.screen
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.myapplication.R
 import com.example.myapplication.data.UserDataRepository
 import com.example.myapplication.di.ServiceLocator
 import com.example.myapplication.model.UserDataModel
@@ -25,6 +29,9 @@ fun RegistrationScreen(navController: NavController) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
+    val errorEmpty = stringResource(R.string.reg_error_empty)
+    val errorDefault = stringResource(R.string.reg_error_default)
+
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
@@ -32,12 +39,14 @@ fun RegistrationScreen(navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(16.dp),
+                .padding(16.dp)
+                .imePadding()
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Create Account",
+                text = stringResource(R.string.reg_title),
                 style = MaterialTheme.typography.headlineMedium
             )
 
@@ -46,7 +55,7 @@ fun RegistrationScreen(navController: NavController) {
             OutlinedTextField(
                 value = login,
                 onValueChange = { login = it },
-                label = { Text("Login") },
+                label = { Text(stringResource(R.string.reg_label_login)) },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -55,7 +64,7 @@ fun RegistrationScreen(navController: NavController) {
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("Name") },
+                label = { Text(stringResource(R.string.reg_label_name)) },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -64,7 +73,7 @@ fun RegistrationScreen(navController: NavController) {
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Password") },
+                label = { Text(stringResource(R.string.reg_label_pass)) },
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -75,7 +84,7 @@ fun RegistrationScreen(navController: NavController) {
                 onClick = {
                     scope.launch {
                         if (login.isBlank() || password.isBlank() || name.isBlank()) {
-                            snackbarHostState.showSnackbar("All fields are required")
+                            snackbarHostState.showSnackbar(errorEmpty)
                             return@launch
                         }
 
@@ -88,18 +97,20 @@ fun RegistrationScreen(navController: NavController) {
                                 popUpTo(Registration) { inclusive = true }
                             }
                         } catch (e: Exception) {
-                            snackbarHostState.showSnackbar(e.message ?: "Registration failed")
+                            snackbarHostState.showSnackbar(e.message ?: errorDefault)
                         }
                     }
-                }
+                },
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Register")
+                Text(stringResource(R.string.reg_btn_register))
             }
 
             TextButton(
-                onClick = { navController.navigate(Login) }
+                onClick = { navController.navigate(Login) },
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Already have an account? Sign In")
+                Text(stringResource(R.string.reg_btn_signin))
             }
         }
     }

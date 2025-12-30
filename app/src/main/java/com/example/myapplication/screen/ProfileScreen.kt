@@ -9,12 +9,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.myapplication.R
 import com.example.myapplication.viewmodel.ProfileUiState
 import com.example.myapplication.viewmodel.ProfileViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -23,22 +26,43 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = viewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text(stringResource(R.string.dialog_delete_title)) },
+            text = { Text(stringResource(R.string.dialog_delete_text)) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showDeleteDialog = false
+                        viewModel.deleteAccount(navController)
+                    }
+                ) {
+                    Text(stringResource(R.string.dialog_btn_confirm), color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text(stringResource(R.string.dialog_btn_cancel))
+                }
+            }
+        )
+    }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Profile") },
+                title = { Text(stringResource(R.string.profile_title)) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.desc_back)
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
+                }
             )
         }
     ) { padding ->
@@ -69,27 +93,37 @@ fun ProfileScreen(
 
                     Spacer(modifier = Modifier.height(40.dp))
 
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-                        )
-                    ) {
+                    Card(modifier = Modifier.fillMaxWidth()) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(20.dp),
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
-                            StatItem("Playing", s.playingCount)
+                            StatItem(stringResource(R.string.profile_stat_playing), s.playingCount)
                             VerticalDivider(modifier = Modifier.height(40.dp))
-                            StatItem("Planned", s.plannedCount)
+                            StatItem(stringResource(R.string.profile_stat_planned), s.plannedCount)
                             VerticalDivider(modifier = Modifier.height(40.dp))
-                            StatItem("Completed", s.completedCount)
+                            StatItem(stringResource(R.string.profile_stat_completed), s.completedCount)
                         }
                     }
 
                     Spacer(modifier = Modifier.weight(1f))
+
+                    OutlinedButton(
+                        onClick = { showDeleteDialog = true },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = MaterialTheme.colorScheme.error
+                        )
+                    ) {
+                        Text(stringResource(R.string.profile_btn_delete), fontWeight = FontWeight.Bold)
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
 
                     Button(
                         onClick = { viewModel.logout(navController) },
@@ -102,7 +136,7 @@ fun ProfileScreen(
                             contentColor = MaterialTheme.colorScheme.error
                         )
                     ) {
-                        Text("Logout", fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.profile_btn_logout), fontWeight = FontWeight.Bold)
                     }
                 }
             }

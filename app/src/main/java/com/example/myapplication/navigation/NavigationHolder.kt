@@ -4,11 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.myapplication.screen.AddGameScreen
 import com.example.myapplication.screen.GameListScreen
 import com.example.myapplication.screen.LoginScreen
 import com.example.myapplication.screen.ProfileScreen
 import com.example.myapplication.screen.RegistrationScreen
+import com.example.myapplication.screen.RestoreAccountScreen
 
 @Composable
 fun NavigationHolder(startDestination: Any) {
@@ -32,6 +34,10 @@ fun NavigationHolder(startDestination: Any) {
         }
         composable<Profile> {
             ProfileScreen(navController = navController)
+        }
+        composable<RestoreAccount> { backStackEntry ->
+            val args = backStackEntry.toRoute<RestoreAccount>()
+            RestoreAccountScreen(login = args.login, navController = navController)
         }
     }
 }

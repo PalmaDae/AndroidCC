@@ -11,5 +11,7 @@ data class UserEntity(
     @ColumnInfo(name = "name")
     val name: String,
     @ColumnInfo(name = "hashpass")
-    val hashPass: String
+    val hashPass: String,
+    @ColumnInfo(name = "deletiondate")
+    val deletionDate: Long? = null
 )

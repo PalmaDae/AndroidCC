@@ -12,11 +12,11 @@ class UserRepository(
     private val mapper: UserModelMapper,
     private val ioDispatcher: CoroutineDispatcher
 ) {
-    private val userDao = lazy { ServiceLocator.getDatabase().userDao() }
+    private fun getUserDao() = ServiceLocator.getDatabase().userDao()
 
     suspend fun createNewUser(userModel: UserDataModel) {
         withContext(ioDispatcher) {
-            val existingUser = userDao.value.getUserByLogin(userModel.login)
+            val existingUser = getUserDao().getUserByLogin(userModel.login)
             if (existingUser != null) {
                 throw Exception("User with this login already exists")
             }
@@ -24,16 +24,41 @@ class UserRepository(
             val entity = UserEntity(
                 login = userModel.login,
                 name = userModel.name,
-                hashPass = HashUtil.hashPassword(userModel.password)
+                hashPass = HashUtil.hashPassword(userModel.password),
+                deletionDate = null
             )
-            userDao.value.putUserData(entity)
+            getUserDao().putUserData(entity)
         }
     }
 
     suspend fun getUserByLogin(login: String): UserDataModel? {
         return withContext(ioDispatcher) {
-            val entity = userDao.value.getUserByLogin(login)
+            val entity = getUserDao().getUserByLogin(login)
             entity?.let { mapper.map(it) }
+        }
+    }
+
+    suspend fun markAccountForDeletion(login: String) {
+        withContext(ioDispatcher) {
+            val user = getUserDao().getUserByLogin(login)
+            user?.let {
+                getUserDao().putUserData(it.copy(deletionDate = System.currentTimeMillis()))
+            }
+        }
+    }
+
+    suspend fun restoreAccount(login: String) {
+        withContext(ioDispatcher) {
+            val user = getUserDao().getUserByLogin(login)
+            user?.let {
+                getUserDao().putUserData(it.copy(deletionDate = null))
+            }
+        }
+    }
+
+    suspend fun permanentDelete(login: String) {
+        withContext(ioDispatcher) {
+            getUserDao().deleteUserByLogin(login)
         }
     }
 }
