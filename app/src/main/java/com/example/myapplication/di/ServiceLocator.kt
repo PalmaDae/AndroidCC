@@ -15,12 +15,17 @@ object ServiceLocator {
     private var inceptionDatabase: InceptionDatabase? = null
 
     private val userModelMapper = UserModelMapper()
-    private val gameRepository = GameRepository(Dispatchers.IO)
 
-    private val userRepository = UserRepository(
-        mapper = userModelMapper,
-        ioDispatcher = Dispatchers.IO
-    )
+    private val _gameRepository by lazy {
+        GameRepository(Dispatchers.IO)
+    }
+
+    private val _userRepository by lazy {
+        UserRepository(
+            mapper = userModelMapper,
+            ioDispatcher = Dispatchers.IO
+        )
+    }
 
     fun initDatabase(appCtx: Context) {
         if (inceptionDatabase == null) {
@@ -37,7 +42,7 @@ object ServiceLocator {
     fun getDatabase(): InceptionDatabase =
         inceptionDatabase ?: throw IllegalStateException("DB is not initialized")
 
-    fun getUserRepository(): UserRepository = userRepository
+    fun getUserRepository(): UserRepository = _userRepository
 
-    fun getGameRepository(): GameRepository = gameRepository
+    fun getGameRepository(): GameRepository = _gameRepository
 }
