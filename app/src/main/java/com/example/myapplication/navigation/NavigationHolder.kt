@@ -31,7 +31,7 @@ fun NavigationHolder(startDestination: Any) {
             AddGameScreen(navController = navController)
         }
         composable<Profile> {
-            ProfileScreen()
+            ProfileScreen(navController = navController)
         }
     }
 }

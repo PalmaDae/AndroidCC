@@ -30,6 +30,10 @@ object UserDataRepository {
     }
 
     fun clearSession() {
-        sharedPref?.edit()?.clear()?.apply()
+        sharedPref?.edit()?.apply {
+            remove(KEY_IS_LOGGED_IN)
+            remove(KEY_USER_LOGIN)
+            apply()
+        }
     }
 }
