@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Donor City</string>
     <string name="loading">Загрузка…</string>
     <string name="write_city">Введите город</string>
     <string name="deficit_blood">Кровь в дефиците:</string>

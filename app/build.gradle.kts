@@ -59,4 +59,7 @@ dependencies {
 
     implementation(libs.androidx.compose.navigation)
     implementation("io.coil-kt:coil-compose:2.6.0")
+
+    implementation ("com.google.dagger:dagger:2.59.0")
+    annotationProcessor ("com.google.dagger:dagger-compiler:2.59.0")
 }
