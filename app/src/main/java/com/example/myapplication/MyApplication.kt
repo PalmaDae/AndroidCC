@@ -3,6 +3,9 @@ package com.example.myapplication
 import android.app.Application
 import com.example.myapplication.di.AppComponent
 import com.example.myapplication.di.DaggerAppComponent
+import com.example.myapplication.utils.AnalyticsLogger
+import com.example.myapplication.utils.UserManager
+import javax.inject.Inject
 
 class MyApplication : Application() {
     lateinit var appComponent: AppComponent
@@ -10,7 +13,11 @@ class MyApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        appComponent = DaggerAppComponent.factory().create()
-        appComponent.inject(this)
+
+        appComponent = DaggerAppComponent.builder().build()
+
+
+        val userId = appComponent.getUserManager().getUserId()
+        appComponent.getAnalyticsLogger().setUserId(userId)
     }
 }

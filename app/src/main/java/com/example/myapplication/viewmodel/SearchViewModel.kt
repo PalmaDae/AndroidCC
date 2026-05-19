@@ -10,10 +10,13 @@ import com.example.myapplication.data.model.DonorPointDetailModel
 import com.example.myapplication.data.model.DonorPointModel
 import com.example.myapplication.data.network.RetrofitHelper
 import com.example.myapplication.data.network.RetrofitHelper.api
+import com.example.myapplication.utils.AnalyticsLogger
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class SearchViewModel @Inject constructor() : ViewModel() {
+class SearchViewModel @Inject constructor(
+    private val analyticsLogger: AnalyticsLogger
+) : ViewModel() {
 
     var points by mutableStateOf<List<DonorPointModel>>(emptyList())
         private set
@@ -44,6 +47,7 @@ class SearchViewModel @Inject constructor() : ViewModel() {
             } catch (e: Exception) {
                 error = "Ошибка загрузки: ${e.message}"
                 points = emptyList()
+                analyticsLogger.logError("Error loading points for city: $cityName", e)
             } finally {
                 isLoading = false
             }

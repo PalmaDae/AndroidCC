@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     kotlin("kapt")
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -64,6 +66,12 @@ dependencies {
     implementation("com.google.dagger:dagger:2.51.1")
     kapt("com.google.dagger:dagger-compiler:2.51.1")
     implementation("androidx.constraintlayout:constraintlayout:2.2.0")
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.analytics)
+
+    implementation(libs.androidx.security.crypto)
 }
 
 kapt {
