@@ -72,6 +72,9 @@ dependencies {
     implementation(libs.firebase.analytics)
 
     implementation(libs.androidx.security.crypto)
+
+    implementation("com.google.firebase:firebase-messaging:24.1.0")
+    implementation("androidx.core:core-ktx:1.17.0")
 }
 
 kapt {
