@@ -14,14 +14,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myapplication.MyApplication
 import com.example.myapplication.R
 import com.example.myapplication.data.model.DonorPointDetailModel
-import com.example.myapplication.ui.theme.DonorCity
-import com.example.myapplication.viewmodel.SearchViewModel
+import com.example.myapplication.di.SearchViewModelFactory
 
 @Composable
 fun DetailsApp(point: DonorPointDetailModel) {
@@ -64,12 +65,22 @@ fun DetailsApp(point: DonorPointDetailModel) {
 }
 
 @Composable
-fun DetailScreen(pointId: Int, vm: SearchViewModel = viewModel()) {
-    var point by remember { mutableStateOf<DonorPointDetailModel?>(null) }
+fun DetailScreen(
+    pointId: Int
+) {
+    val context = LocalContext.current
+    val appComponent = (context.applicationContext as MyApplication).appComponent
+    val factory = appComponent.getSearchViewModelFactory()
 
-    LaunchedEffect(pointId) {
-        point = vm.getDetail(pointId)
+    val viewModel = remember(pointId) {
+        factory.createForDetail(pointId)
     }
 
-    point?.let { DetailsApp(it) } ?: Text(stringResource(R.string.loading))
+    val pointDetail = viewModel.currentPointDetail
+
+    if (pointDetail == null) {
+        Text(stringResource(R.string.loading))
+    } else {
+        DetailsApp(point = pointDetail)
+    }
 }

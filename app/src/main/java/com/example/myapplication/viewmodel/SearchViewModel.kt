@@ -10,10 +10,10 @@ import com.example.myapplication.data.model.DonorPointDetailModel
 import com.example.myapplication.data.model.DonorPointModel
 import com.example.myapplication.data.network.RetrofitHelper
 import com.example.myapplication.data.network.RetrofitHelper.api
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SearchViewModel : ViewModel() {
+class SearchViewModel @Inject constructor() : ViewModel() {
 
     var points by mutableStateOf<List<DonorPointModel>>(emptyList())
         private set
@@ -22,6 +22,9 @@ class SearchViewModel : ViewModel() {
         private set
 
     var error by mutableStateOf<String?>(null)
+        private set
+
+    var currentPointDetail by mutableStateOf<DonorPointDetailModel?>(null)
         private set
 
     fun load(cityName: String) {
@@ -48,7 +51,17 @@ class SearchViewModel : ViewModel() {
     }
 
     suspend fun getDetail(pointId: Int): DonorPointDetailModel? {
-        val dto: DonorPointDetailDto = api.getDetail(pointId)
-        return dto.toDetailModel()
+        return try {
+            val dto: DonorPointDetailDto = api.getDetail(pointId)
+            dto.toDetailModel()
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    fun setCurrentPointId(pointId: Int) {
+        viewModelScope.launch {
+            currentPointDetail = getDetail(pointId)
+        }
     }
 }

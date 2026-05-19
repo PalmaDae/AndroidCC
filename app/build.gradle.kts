@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    kotlin("kapt")
 }
 
 android {
@@ -60,6 +61,11 @@ dependencies {
     implementation(libs.androidx.compose.navigation)
     implementation("io.coil-kt:coil-compose:2.6.0")
 
-    implementation ("com.google.dagger:dagger:2.59.0")
-    annotationProcessor ("com.google.dagger:dagger-compiler:2.59.0")
+    implementation("com.google.dagger:dagger:2.51.1")
+    kapt("com.google.dagger:dagger-compiler:2.51.1")
+    implementation("androidx.constraintlayout:constraintlayout:2.2.0")
+}
+
+kapt {
+    correctErrorTypes = true
 }

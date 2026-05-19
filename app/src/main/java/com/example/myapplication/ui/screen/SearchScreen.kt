@@ -24,23 +24,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
+import com.example.myapplication.MyApplication
 import com.example.myapplication.R
 import com.example.myapplication.data.model.DonorPointModel
 import com.example.myapplication.viewmodel.SearchViewModel
 
 @Composable
 fun SearchApp(
-    vm: SearchViewModel = viewModel(),
     navController: NavController
 ) {
+    val context = LocalContext.current
+    val appComponent = (context.applicationContext as MyApplication).appComponent
+    val vm = remember { appComponent.getSearchViewModel() }
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
